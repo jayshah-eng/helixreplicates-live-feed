@@ -28,7 +28,7 @@
     body {
       margin: 0;
       min-width: 320px;
-      background: var(--canvas);
+      background: radial-gradient(circle at 88% 10%, rgba(181,217,176,.16), transparent 24rem), var(--canvas);
       color: var(--ink);
       font-family: var(--body);
       -webkit-font-smoothing: antialiased;
@@ -37,34 +37,34 @@
     button { cursor: pointer; }
     .page { width: min(1660px, calc(100% - 64px)); margin: 0 auto; }
     .topbar {
-      min-height: 72px;
+      min-height: 142px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
-      border-bottom: 1px solid var(--line);
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 16px;
+      padding: 0 24px;
+      border-radius: 20px;
+      background: var(--blue-dark);
+      color: white;
+      box-shadow: 0 20px 48px rgba(37,44,73,.16);
     }
+    .topbar:after { position: absolute; content: ""; width: 300px; height: 300px; right: 14%; top: -228px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; box-shadow: 0 0 0 28px rgba(255,255,255,.025), 0 0 0 60px rgba(255,255,255,.025); pointer-events: none; }
     .brand {
       display: flex;
-      align-items: baseline;
-      gap: 12px;
-      color: var(--blue-dark);
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      font-size: 12px;
-      font-weight: 700;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
     }
-    .brand strong {
-      font-family: var(--display);
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -.04em;
-      text-transform: none;
-    }
-    .brand-rule { width: 1px; height: 18px; background: #c9ccd5; align-self: center; }
-    .event-label { color: var(--muted); font-size: 12px; letter-spacing: .09em; text-transform: uppercase; }
-    .top-status { display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 12px; }
-    .live-label { display: inline-flex; align-items: center; gap: 8px; color: var(--green); font-weight: 700; letter-spacing: .12em; }
+    .brand-logo { display: block; width: 292px; height: auto; flex: none; padding: 16px; }
+    .brand-rule { width: 1px; height: 32px; background: rgba(255,255,255,.26); }
+    .event-label { color: #e2e4ec; font-size: 11px; font-weight: 700; letter-spacing: .14em; line-height: 1.55; text-transform: uppercase; }
+    .event-label span { display: block; color: #b5d9b0; font-size: 10px; letter-spacing: .12em; }
+    .top-status { display: flex; align-items: flex-end; flex-direction: column; gap: 8px; position: relative; z-index: 1; color: #e2e4ec; font-size: 11px; }
+    .live-label { display: inline-flex; align-items: center; gap: 8px; color: #b5d9b0; font-weight: 700; letter-spacing: .14em; }
     .live-dot {
       width: 8px; height: 8px; border-radius: 50%; background: var(--green);
       box-shadow: 0 0 0 4px rgba(70, 159, 57, .13);
@@ -76,7 +76,7 @@
       grid-template-columns: minmax(0, 1.15fr) minmax(430px, .85fr);
       align-items: end;
       gap: 42px;
-      padding: 36px 0 27px;
+      padding: 35px 0 27px;
     }
     .eyebrow {
       color: var(--blue);
@@ -91,7 +91,7 @@
     h1 {
       color: var(--blue-dark);
       font-family: var(--display);
-      font-size: clamp(34px, 4vw, 52px);
+      font-size: clamp(36px, 4.2vw, 56px);
       font-weight: 700;
       letter-spacing: -.055em;
       line-height: 1.08;
@@ -101,8 +101,8 @@
     h1 em { color: var(--green); font-style: normal; }
     .intro-copy {
       color: #626978;
-      font-size: 15px;
-      line-height: 1.55;
+      font-size: 16px;
+      line-height: 1.6;
       margin: 13px 0 0;
       max-width: 620px;
     }
@@ -115,8 +115,9 @@
       min-height: 77px;
       padding: 14px 16px;
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.78);
+      border-radius: 14px;
+      background: rgba(255,255,255,.88);
+      box-shadow: 0 8px 24px rgba(37,44,73,.04);
     }
     .rollup-value { display: block; color: var(--blue-dark); font-family: var(--display); font-size: 25px; line-height: 1; }
     .rollup-label { display: block; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .09em; margin-top: 9px; text-transform: uppercase; }
@@ -125,12 +126,13 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      min-height: 48px;
-      padding: 0 16px;
-      border-radius: 12px;
+      min-height: 58px;
+      padding: 0 18px;
+      border-radius: 14px;
       background: var(--blue-dark);
       color: white;
       font-size: 12px;
+      box-shadow: 0 10px 24px rgba(37,44,73,.12);
     }
     .feed-left, .feed-right { display: flex; align-items: center; gap: 16px; }
     .feed-left { min-width: 0; }
@@ -151,6 +153,8 @@
     }
     .control-btn:hover, .control-btn:focus-visible { background: rgba(255,255,255,.14); border-color: white; outline: none; }
     .control-btn.secondary { border-color: transparent; color: #e2e4ec; }
+    .submit-quicklink { flex: none; border-radius: 999px; background: var(--yellow); color: var(--blue-dark); font-size: 11px; font-weight: 700; padding: 10px 14px; text-decoration: none; }
+    .submit-quicklink:hover { background: #ffdb65; }
     .board {
       display: grid;
       grid-template-columns: minmax(0, 1.55fr) minmax(350px, .75fr);
@@ -164,7 +168,9 @@
       border-radius: var(--radius);
       background: var(--paper);
       box-shadow: var(--shadow);
+      transition: transform .22s ease, box-shadow .22s ease;
     }
+    .panel:hover { transform: translateY(-2px); box-shadow: 0 20px 52px rgba(37,44,73,.1); }
     .feature-panel { padding: 23px 27px 21px; overflow: hidden; position: relative; }
     .feature-panel:before {
       position: absolute; content: ""; width: 190px; height: 190px; right: -96px; top: -105px;
@@ -269,9 +275,9 @@
     .rank-row {
       display: grid; grid-template-columns: 24px minmax(0, 1fr) 48px; align-items: center; gap: 10px;
       width: 100%; border: 1px solid transparent; border-radius: 12px; background: #f8f8f8;
-      padding: 10px 11px; text-align: left; color: inherit; transition: border-color .16s ease, background .16s ease;
+      padding: 11px 12px; text-align: left; color: inherit; transition: border-color .16s ease, background .16s ease, transform .16s ease;
     }
-    .rank-row:hover { border-color: #cdd3e3; background: #f2f3f7; }
+    .rank-row:hover { border-color: #cdd3e3; background: #f2f3f7; transform: translateX(2px); }
     .rank-row.active { border-color: #a4c6a0; background: #f1f7ef; }
     .rank-num { color: #858b99; font-family: var(--display); font-size: 15px; }
     .rank-copy { min-width: 0; }
@@ -289,6 +295,38 @@
     .howto h2 { color: var(--blue-dark); font-family: var(--display); font-size: 17px; line-height: 1.2; margin: 0; }
     .howto p { color: #606878; font-size: 11px; line-height: 1.5; margin: 0; }
     .howto strong { color: var(--blue-dark); }
+    .submit-panel {
+      display: grid;
+      grid-template-columns: minmax(230px, .78fr) minmax(320px, 1.25fr) minmax(160px, .48fr);
+      gap: 26px;
+      align-items: center;
+      margin: 18px 0;
+      padding: 26px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: white;
+      box-shadow: var(--shadow);
+    }
+    .submit-intro h2 { color: var(--blue-dark); font-family: var(--display); font-size: 25px; letter-spacing: -.04em; line-height: 1.18; margin: 0 0 10px; }
+    .submit-intro p:not(.eyebrow) { color: #626978; font-size: 12px; line-height: 1.55; margin: 0 0 14px; }
+    .demo-badge { display: inline-flex; gap: 8px; align-items: center; border: 1px solid #f0d781; border-radius: 999px; background: #fff9e5; color: #765d13; font-size: 9px; font-weight: 700; letter-spacing: .07em; line-height: 1.35; padding: 8px 10px; text-transform: uppercase; }
+    .demo-badge:before { content: ""; width: 6px; height: 6px; flex: none; border-radius: 50%; background: #c09300; }
+    .submit-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; min-width: 0; }
+    .form-field { display: flex; min-width: 0; flex-direction: column; gap: 5px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label { color: var(--blue-dark); font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+    .form-field input { width: 100%; min-width: 0; height: 39px; border: 1px solid #d9dce3; border-radius: 9px; background: #fcfcfd; color: var(--ink); font-size: 12px; padding: 0 11px; }
+    .form-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(64,76,119,.1); outline: none; }
+    .form-field input[type="file"] { height: auto; min-height: 42px; padding: 8px; border-style: dashed; border-color: #aeb5c5; background: #f8f9fc; }
+    .form-field input[type="file"]::file-selector-button { margin-right: 9px; border: 0; border-radius: 6px; background: #e9ecf3; color: var(--blue-dark); font: inherit; font-weight: 700; padding: 6px 8px; cursor: pointer; }
+    .form-actions { display: flex; align-items: center; gap: 12px; grid-column: 1 / -1; }
+    .form-submit { flex: none; border: 0; border-radius: 999px; background: var(--blue); color: white; font-size: 11px; font-weight: 700; padding: 11px 15px; }
+    .form-submit:hover { background: var(--blue-dark); }
+    .form-status { color: #626978; font-size: 10px; line-height: 1.4; margin: 0; }
+    .qr-card { display: grid; justify-items: center; gap: 8px; border-left: 1px solid var(--line); padding-left: 20px; text-align: center; }
+    .qr-card img { width: 112px; height: 112px; border-radius: 10px; border: 1px solid var(--line); padding: 5px; }
+    .qr-card strong { color: var(--blue-dark); font-size: 10px; }
+    .qr-card span { max-width: 150px; color: var(--muted); font-size: 9px; line-height: 1.45; }
     .footer {
       display: flex; align-items: center; justify-content: space-between; gap: 18px;
       padding: 0 0 20px; color: var(--muted); font-size: 10px;
@@ -306,14 +344,19 @@
       .ranking-panel { min-height: unset; }
       .howto { grid-template-columns: 1fr 1fr; }
       .howto h2 { grid-column: 1 / -1; }
+      .submit-panel { grid-template-columns: minmax(210px, .8fr) minmax(320px, 1.2fr); }
+      .qr-card { grid-column: 1 / -1; grid-template-columns: auto 1fr; justify-items: start; align-items: center; border-left: 0; border-top: 1px solid var(--line); padding: 18px 0 0; text-align: left; }
+      .qr-card img { grid-row: span 2; }
+      .qr-card span { max-width: none; }
     }
     @media (max-width: 660px) {
       .page { width: calc(100% - 28px); }
-      .topbar { min-height: 62px; }
-      .brand { gap: 8px; font-size: 10px; }
-      .brand strong { font-size: 15px; }
-      .event-label { display: none; }
-      .top-status { gap: 8px; font-size: 10px; }
+      .topbar { min-height: auto; margin-top: 10px; padding: 7px 12px 11px; border-radius: 15px; flex-wrap: wrap; }
+      .brand { gap: 9px; }
+      .brand-logo { width: 250px; padding: 20px; }
+      .brand-rule, .event-label { display: none; }
+      .top-status { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px; font-size: 9px; }
+      .live-label { gap: 6px; font-size: 9px; }
       .intro { padding: 28px 0 20px; }
       h1 { font-size: 35px; }
       .intro-copy { font-size: 13px; }
@@ -327,6 +370,7 @@
       .feed-right { width: 100%; justify-content: space-between; }
       .controls { gap: 4px; }
       .control-btn { padding: 7px 9px; font-size: 10px; }
+      .submit-quicklink { padding: 8px 10px; font-size: 10px; }
       .feature-panel, .ranking-panel { padding: 19px 16px; }
       .paper-heading { font-size: 25px; }
       .claim-grid { grid-template-columns: 1fr; gap: 13px; }
@@ -340,6 +384,12 @@
       .caveat { max-width: 100%; }
       .howto { grid-template-columns: 1fr; gap: 12px; padding: 18px; }
       .howto h2 { grid-column: auto; }
+      .submit-panel { grid-template-columns: 1fr; gap: 18px; padding: 19px 16px; }
+      .submit-form { grid-template-columns: 1fr; }
+      .form-field.full, .form-actions { grid-column: auto; }
+      .form-actions { align-items: flex-start; flex-direction: column; }
+      .qr-card { grid-template-columns: auto 1fr; grid-column: auto; }
+      .qr-card img { width: 94px; height: 94px; }
       .footer { align-items: flex-start; flex-direction: column; gap: 8px; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -351,12 +401,13 @@
   <div class="page">
     <header class="topbar">
       <div class="brand">
-        <span>Helix</span><span class="brand-rule"></span><strong>Replicates</strong>
-        <span class="event-label">ASHG 2026 · Montréal</span>
+        <img class="brand-logo" src="./assets/helix-logo-reverse.svg" alt="Helix®">
+        <span class="brand-rule" aria-hidden="true"></span>
+        <span class="event-label">ASHG 2026<span>Montréal · Live research feed</span></span>
       </div>
       <div class="top-status">
         <span class="live-label"><span class="live-dot"></span> LIVE FEED</span>
-        <span id="syncStatus" aria-live="polite">Connecting to feed…</span>
+        <span id="syncStatus" aria-live="polite">Loading the latest snapshot…</span>
       </div>
     </header>
 
@@ -387,6 +438,7 @@
             <button class="control-btn secondary" id="nextBtn" type="button">Next →</button>
             <button class="control-btn secondary" id="fullscreenBtn" type="button">Full screen</button>
           </div>
+          <a class="submit-quicklink" href="#submit-paper">Submit a paper ↗</a>
         </div>
       </section>
 
@@ -423,10 +475,46 @@
         <p><strong>Direction agreement</strong> shows how many tested effects pointed the same way as the paper. The adjacent count separates those from findings that passed the report's significance threshold.</p>
         <p><strong>Power</strong> is estimated at the published effect size. These are pilot readouts, not final verdicts; the supplied reports say the verdict rule was set after results were seen.</p>
       </section>
+
+      <section class="submit-panel" id="submit-paper" aria-labelledby="submitTitle">
+        <div class="submit-intro">
+          <p class="eyebrow">Your paper, next in line</p>
+          <h2 id="submitTitle">What should we replicate next?</h2>
+          <p>Share a published research paper for the Helix team to review for replication.</p>
+          <span class="demo-badge">Design preview · Nothing is sent or stored</span>
+        </div>
+        <form class="submit-form" id="paperSubmissionForm">
+          <div class="form-field">
+            <label for="submitName">Name</label>
+            <input id="submitName" name="name" autocomplete="name" required>
+          </div>
+          <div class="form-field">
+            <label for="submitInstitution">Institution</label>
+            <input id="submitInstitution" name="institution" autocomplete="organization" required>
+          </div>
+          <div class="form-field full">
+            <label for="submitEmail">Email</label>
+            <input id="submitEmail" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="form-field full">
+            <label for="submitFile">Research paper</label>
+            <input id="submitFile" name="paper" type="file" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" required>
+          </div>
+          <div class="form-actions">
+            <button class="form-submit" type="submit">Preview submission</button>
+            <p class="form-status" id="submissionStatus" aria-live="polite">Demo mode: selecting a file will not upload it.</p>
+          </div>
+        </form>
+        <aside class="qr-card" aria-label="QR code for the submission form">
+          <img src="./assets/paper-submission-qr.png" alt="QR code linking to this paper submission section">
+          <strong>Open on your phone</strong>
+          <span>Scan to jump to this demo form. It does not transmit a submission.</span>
+        </aside>
+      </section>
     </main>
 
     <footer class="footer">
-      <span class="footer-note">Source summaries are based on the supplied replication cards. Select a study to inspect its main claim, sample, power estimate, secondary findings, and source paper.</span>
+      <span class="footer-note">Source summaries are based on the supplied replication cards. Select a study to inspect its main claim, sample, power estimate, secondary findings, and source paper. Submission intake shown above is a design preview only.</span>
       <span class="copyright">© 2026 Helix, Inc. All rights reserved.</span>
     </footer>
   </div>
@@ -519,7 +607,6 @@
             '<div class="metric"><div class="metric-value">' + esc(study.controls) + '</div><div class="metric-label">Matched controls</div></div>' +
           '</div>' +
           '<div class="power-meter"><span class="power-meter-label">Power</span><div class="power-track" aria-hidden="true"><div class="power-fill" style="width:' + scorePercent(study) + '%"></div></div><span class="power-score">' + scorePercent(study) + '%</span><span class="power-basis">' + esc(study.powerBasis) + '</span></div>' +
-          '</div>' +
           '<div class="secondary-wrap"><p class="secondary-title">Other results in the report</p><ul class="secondary-list">' +
             signals.map(function (signal) { return '<li>' + esc(signal) + '</li>'; }).join("") +
           '</ul></div>';
@@ -674,6 +761,14 @@
       });
       sortSelect.addEventListener("change", renderRanking);
       searchInput.addEventListener("input", renderRanking);
+      document.getElementById("submitFile").addEventListener("change", function () {
+        var file = this.files && this.files[0];
+        document.getElementById("submissionStatus").textContent = file ? "Selected: " + file.name + " · demo only, not uploaded" : "Demo mode: selecting a file will not upload it.";
+      });
+      document.getElementById("paperSubmissionForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        document.getElementById("submissionStatus").textContent = "Preview complete. Nothing was uploaded, saved, or sent to Slack.";
+      });
       rotationTimer = window.setInterval(function () { if (autoAdvance) step(1); }, 12000);
       refreshTimer = window.setInterval(syncFeed, 20000);
       syncTimer = window.setInterval(function () {

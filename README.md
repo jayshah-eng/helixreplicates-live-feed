@@ -4,7 +4,7 @@ A looping conference display for the five supplied pilot replication cards. The 
 
 ## Publish with GitHub Pages
 
-The included GitHub Actions workflow publishes the site whenever index.html or papers.json changes on the repository's main branch.
+The included GitHub Actions workflow publishes the site whenever the page, feed data, brand assets, or workflow changes on the repository's main branch.
 
 1. Create a GitHub repository and add the files in this folder to its root.
 2. In the repository settings, open **Pages** and set the publishing source to **GitHub Actions**.
@@ -35,6 +35,12 @@ Each entry should include:
 - For gene-burden studies, primaryFinding and secondarySignals
 
 The leaderboard uses the report's estimated power for the primary claim. For GWAS entries, powerScore is expected corrected-significant findings divided by tested loci. For gene-burden entries, it is the report's power estimate for the primary claim. Add only aggregate findings suitable for display; preserve suppression of small carrier counts.
+
+## Paper submission preview
+
+The QR code opens the on-page intake preview. The form validates its required fields in the browser but does not upload, store, or send names, email addresses, or selected files. It is a visual prototype only.
+
+To accept real submissions, connect the form to a Helix-managed intake service. A typical flow would request a short-lived upload URL from an authenticated AWS API, upload the paper to a private encrypted S3 bucket, and validate metadata and file type in a Lambda function. Only then should the service send an alert to a private Slack destination, with the file attached or linked under access controls. Keep Slack credentials in AWS Secrets Manager; add file-size/type checks, abuse protection, a retention period, and clear consent language before enabling public intake. Do not collect participant-level or other sensitive research data through this form.
 
 ## Interpretation notes
 
