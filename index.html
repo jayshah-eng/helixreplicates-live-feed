@@ -12,6 +12,7 @@
       --green: #228228;
       --green-light: #b5d9b0;
       --pink: #d43c66;
+      --brand-pink: #f05b83;
       --pink-light: #f59cb5;
       --yellow: #f6be17;
       --paper: #ffffff;
@@ -37,34 +38,26 @@
     button { cursor: pointer; }
     .page { width: min(1660px, calc(100% - 64px)); margin: 0 auto; }
     .topbar {
-      min-height: 56px;
+      min-height: 62px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      position: relative;
-      overflow: hidden;
-      margin-top: 12px;
-      padding: 0 18px;
-      border-radius: 14px;
-      background: var(--blue-dark);
-      color: white;
-      box-shadow: 0 8px 24px rgba(37,44,73,.12);
+      gap: 20px;
+      margin-top: 8px;
+      padding: 0 4px;
+      border-bottom: 1px solid var(--line);
     }
-    .topbar:after { position: absolute; content: ""; width: 170px; height: 170px; right: 24%; top: -134px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; box-shadow: 0 0 0 18px rgba(255,255,255,.025), 0 0 0 38px rgba(255,255,255,.025); pointer-events: none; }
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      position: relative;
-      z-index: 1;
     }
-    .brand-logo { display: block; width: 250px; height: auto; flex: none; padding: 20px; }
-    .brand-rule { width: 1px; height: 24px; background: rgba(255,255,255,.26); }
-    .event-label { color: #e2e4ec; font-size: 10px; font-weight: 700; letter-spacing: .13em; line-height: 1.35; text-transform: uppercase; }
-    .event-label span { display: inline; margin-left: 8px; color: #b5d9b0; font-size: inherit; letter-spacing: inherit; }
-    .top-status { display: flex; align-items: center; flex-direction: row; gap: 14px; position: relative; z-index: 1; color: #e2e4ec; font-size: 10px; }
-    .live-label { display: inline-flex; align-items: center; gap: 8px; color: #b5d9b0; font-weight: 700; letter-spacing: .14em; }
+    .event-label { color: var(--blue-dark); font-size: 10px; font-weight: 700; letter-spacing: .13em; line-height: 1.35; text-transform: uppercase; }
+    .event-label span { display: inline; margin-left: 8px; color: var(--green); font-size: inherit; letter-spacing: inherit; }
+    .topbar-right { display: flex; align-items: center; gap: 20px; }
+    .brand-logo { display: block; width: 158px; height: auto; flex: none; }
+    .top-status { display: flex; align-items: center; flex-direction: row; gap: 12px; color: var(--muted); font-size: 10px; }
+    .live-label { display: inline-flex; align-items: center; gap: 8px; color: var(--green); font-weight: 700; letter-spacing: .14em; }
     .live-dot {
       width: 8px; height: 8px; border-radius: 50%; background: var(--green);
       box-shadow: 0 0 0 4px rgba(70, 159, 57, .13);
@@ -78,8 +71,7 @@
       gap: 20px;
       padding: 12px 0 13px;
     }
-    .intro-side { display: flex; min-width: 0; align-items: center; justify-content: flex-end; gap: 4px; }
-    .brand-plaque { flex: none; overflow: hidden; border-radius: 14px; background: var(--blue-dark); box-shadow: 0 8px 20px rgba(37,44,73,.12); }
+    .intro-side { display: flex; min-width: 0; align-items: center; justify-content: flex-end; }
     .eyebrow {
       color: var(--blue);
       font-size: 11px;
@@ -109,22 +101,27 @@
       max-width: 640px;
     }
     .rollup {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      display: flex;
+      align-items: center;
       min-width: 0;
-      flex: 1;
-      gap: 8px;
-    }
-    .rollup-item {
-      min-height: 62px;
-      padding: 10px 11px;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: rgba(255,255,255,.88);
       box-shadow: 0 8px 24px rgba(37,44,73,.04);
+      padding: 12px 14px;
     }
-    .rollup-value { display: block; color: var(--blue-dark); font-family: var(--display); font-size: 21px; line-height: 1; }
-    .rollup-label { display: block; color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .07em; line-height: 1.2; margin-top: 6px; text-transform: uppercase; }
+    .rollup-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      min-height: 0;
+      padding: 0 13px;
+    }
+    .rollup-item:first-child { padding-left: 0; }
+    .rollup-item + .rollup-item { border-left: 1px solid var(--line); }
+    .rollup-item:last-child { padding-right: 0; }
+    .rollup-value { display: block; color: var(--blue-dark); font-family: var(--display); font-size: 22px; line-height: 1; }
+    .rollup-label { display: block; color: var(--muted); font-size: 9px; font-weight: 700; letter-spacing: .07em; line-height: 1.2; text-transform: uppercase; }
     .feed-strip {
       display: flex;
       align-items: center;
@@ -142,8 +139,6 @@
     .feed-left { min-width: 0; }
     .feed-state { color: #d9e7d5; font-weight: 700; }
     .feed-meta { color: #d5d8e2; }
-    .ticker { overflow: hidden; white-space: nowrap; color: #eef0f5; }
-    .ticker span { opacity: .82; }
     .controls { display: flex; align-items: center; gap: 8px; flex: none; }
     .control-btn {
       border: 1px solid rgba(255,255,255,.34);
@@ -179,6 +174,12 @@
     .feature-panel:before {
       position: absolute; content: ""; width: 190px; height: 190px; right: -96px; top: -105px;
       border-radius: 50%; background: rgba(181,217,176,.25); pointer-events: none;
+    }
+    .feature-panel:after {
+      position: absolute; content: ""; z-index: 1; left: 0; top: 0; bottom: 0; width: 7px;
+      border-radius: var(--radius) 0 0 var(--radius);
+      background: linear-gradient(to bottom, var(--brand-pink) 0 25%, var(--yellow) 25% 50%, var(--blue) 50% 72.5%, #7ebc74 72.5% 100%);
+      pointer-events: none;
     }
     .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; }
     .panel-head .eyebrow { margin: 0; }
@@ -357,26 +358,24 @@
     }
     @media (max-width: 660px) {
       .page { width: calc(100% - 28px); }
-      .topbar { min-height: auto; margin-top: 8px; padding: 7px 12px 10px; border-radius: 12px; flex-wrap: wrap; }
+      .topbar { min-height: auto; margin-top: 8px; padding: 7px 0 10px; flex-wrap: wrap; }
       .brand { gap: 7px; }
-      .brand-logo { width: 250px; padding: 20px; }
-      .brand-rule { display: none; }
+      .brand-logo { width: 142px; }
       .event-label { font-size: 9px; letter-spacing: .08em; }
       .event-label span { display: none; }
-      .top-status { width: 100%; flex-direction: row; align-items: center; justify-content: space-between; gap: 5px; font-size: 9px; }
+      .topbar-right { gap: 12px; }
+      .top-status { flex-direction: column; align-items: flex-end; gap: 4px; font-size: 8px; }
       .live-label { gap: 6px; font-size: 9px; }
       .intro { padding: 12px 0 11px; gap: 8px; }
       .intro-side { align-items: stretch; flex-direction: column; gap: 5px; }
-      .brand-plaque { align-self: center; }
       h1 { font-size: 32px; }
       .intro-copy { font-size: 13px; }
-      .rollup { max-width: none; gap: 5px; }
-      .rollup-item { min-height: 58px; padding: 8px; }
-      .rollup-value { font-size: 19px; }
-      .rollup-label { font-size: 7px; letter-spacing: .04em; }
+      .rollup { max-width: none; justify-content: center; padding: 10px 12px; }
+      .rollup-item { gap: 6px; padding: 0 11px; }
+      .rollup-value { font-size: 20px; }
+      .rollup-label { font-size: 8px; letter-spacing: .04em; }
       .feed-strip { padding: 11px 12px; align-items: flex-start; flex-wrap: wrap; }
       .feed-left { flex-wrap: wrap; gap: 8px 12px; }
-      .ticker { width: 100%; order: 2; }
       .feed-right { width: 100%; justify-content: space-between; }
       .controls { gap: 4px; }
       .control-btn { padding: 7px 9px; font-size: 10px; }
@@ -413,9 +412,12 @@
       <div class="brand">
         <span class="event-label">ASHG 2026 <span>Montréal · Live research feed</span></span>
       </div>
-      <div class="top-status">
-        <span class="live-label"><span class="live-dot"></span> LIVE FEED</span>
-        <span id="syncStatus" aria-live="polite">Loading the latest snapshot…</span>
+      <div class="topbar-right">
+        <div class="top-status">
+          <span class="live-label"><span class="live-dot"></span> LIVE FEED</span>
+          <span id="syncStatus" aria-live="polite">Loading the latest snapshot…</span>
+        </div>
+        <img class="brand-logo" src="./assets/helix-logo-color.svg" alt="Helix®">
       </div>
     </header>
 
@@ -427,9 +429,7 @@
           <p class="intro-copy">Published studies re-tested in the Helix Explorer platform. Follow each result as the feed moves through the evidence.</p>
         </div>
         <div class="intro-side">
-          <div class="brand-plaque"><img class="brand-logo" src="./assets/helix-logo-reverse.svg" alt="Helix®"></div>
           <div class="rollup" aria-label="Pilot feed overview">
-            <div class="rollup-item"><span class="rollup-value" id="paperCount">5</span><span class="rollup-label">Papers in the feed</span></div>
             <div class="rollup-item"><span class="rollup-value" id="gwasCount">3</span><span class="rollup-label">Genome-wide studies</span></div>
             <div class="rollup-item"><span class="rollup-value" id="burdenCount">2</span><span class="rollup-label">Gene-burden studies</span></div>
           </div>
@@ -440,7 +440,6 @@
         <div class="feed-left">
           <span class="feed-state">AUTO-CYCLING</span>
           <span class="feed-meta" id="feedMeta">New feed data checked every 20 seconds</span>
-          <span class="ticker" id="ticker"><span>Loading study summaries…</span></span>
         </div>
         <div class="feed-right">
           <div class="controls">
@@ -570,10 +569,6 @@
         currentIndex = Math.max(0, Math.min(currentIndex, studies.length - 1));
         return studies[currentIndex];
       }
-      function updateTicker() {
-        var names = studies.map(function (study) { return esc(study.condition); });
-        document.getElementById("ticker").innerHTML = "<span>" + names.join(" &nbsp;·&nbsp; ") + "</span>";
-      }
       function formatMetric(value) {
         if (value == null) return "—";
         return String(value);
@@ -681,10 +676,8 @@
         });
       }
       function updateAll() {
-        document.getElementById("paperCount").textContent = String(studies.length);
         document.getElementById("gwasCount").textContent = String(studies.filter(function (study) { return study.kind === "gwas"; }).length);
         document.getElementById("burdenCount").textContent = String(studies.filter(function (study) { return study.kind === "burden"; }).length);
-        updateTicker();
         renderFeature();
         renderRanking();
       }
