@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7f7">
+  <title>HelixReplicates | Live Feed</title>
+  <style>
+    :root {
+      --blue: #404c77;
+      --blue-dark: #293259;
+      --green: #228228;
+      --green-light: #b5d9b0;
+      --pink: #d43c66;
+      --pink-light: #f59cb5;
+      --yellow: #f6be17;
+      --paper: #ffffff;
+      --canvas: #f7f7f7;
+      --ink: #252c49;
+      --muted: #6b7280;
+      --line: #e2e4e8;
+      --radius: 16px;
+      --shadow: 0 16px 44px rgba(37, 44, 73, .07);
+      --body: "Proxima Nova", "Avenir Next", Arial, sans-serif;
+      --display: "Merriweather", Georgia, serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: var(--body);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, select, input { font: inherit; }
+    button { cursor: pointer; }
+    .page { width: min(1660px, calc(100% - 64px)); margin: 0 auto; }
+    .topbar {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      color: var(--blue-dark);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .brand strong {
+      font-family: var(--display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.04em;
+      text-transform: none;
+    }
+    .brand-rule { width: 1px; height: 18px; background: #c9ccd5; align-self: center; }
+    .event-label { color: var(--muted); font-size: 12px; letter-spacing: .09em; text-transform: uppercase; }
+    .top-status { display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 12px; }
+    .live-label { display: inline-flex; align-items: center; gap: 8px; color: var(--green); font-weight: 700; letter-spacing: .12em; }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+      box-shadow: 0 0 0 4px rgba(70, 159, 57, .13);
+      animation: pulse 1.8s ease-out infinite;
+    }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(70, 159, 57, 0); } }
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(430px, .85fr);
+      align-items: end;
+      gap: 42px;
+      padding: 36px 0 27px;
+    }
+    .eyebrow {
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      line-height: 1.4;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      color: var(--blue-dark);
+      font-family: var(--display);
+      font-size: clamp(34px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -.055em;
+      line-height: 1.08;
+      margin: 0;
+      max-width: 820px;
+    }
+    h1 em { color: var(--green); font-style: normal; }
+    .intro-copy {
+      color: #626978;
+      font-size: 15px;
+      line-height: 1.55;
+      margin: 13px 0 0;
+      max-width: 620px;
+    }
+    .rollup {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .rollup-item {
+      min-height: 77px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.78);
+    }
+    .rollup-value { display: block; color: var(--blue-dark); font-family: var(--display); font-size: 25px; line-height: 1; }
+    .rollup-label { display: block; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .09em; margin-top: 9px; text-transform: uppercase; }
+    .feed-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 12px;
+      background: var(--blue-dark);
+      color: white;
+      font-size: 12px;
+    }
+    .feed-left, .feed-right { display: flex; align-items: center; gap: 16px; }
+    .feed-left { min-width: 0; }
+    .feed-state { color: #d9e7d5; font-weight: 700; }
+    .feed-meta { color: #d5d8e2; }
+    .ticker { overflow: hidden; white-space: nowrap; color: #eef0f5; }
+    .ticker span { opacity: .82; }
+    .controls { display: flex; align-items: center; gap: 8px; flex: none; }
+    .control-btn {
+      border: 1px solid rgba(255,255,255,.34);
+      border-radius: 999px;
+      background: transparent;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 12px;
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .control-btn:hover, .control-btn:focus-visible { background: rgba(255,255,255,.14); border-color: white; outline: none; }
+    .control-btn.secondary { border-color: transparent; color: #e2e4ec; }
+    .board {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(350px, .75fr);
+      gap: 18px;
+      margin-top: 18px;
+      align-items: stretch;
+    }
+    .panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+    .feature-panel { padding: 23px 27px 21px; overflow: hidden; position: relative; }
+    .feature-panel:before {
+      position: absolute; content: ""; width: 190px; height: 190px; right: -96px; top: -105px;
+      border-radius: 50%; background: rgba(181,217,176,.25); pointer-events: none;
+    }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; }
+    .head-note { color: var(--muted); font-size: 11px; }
+    .paper-heading {
+      color: var(--blue-dark);
+      font-family: var(--display);
+      font-size: clamp(24px, 2.5vw, 33px);
+      line-height: 1.17;
+      letter-spacing: -.04em;
+      margin: 3px 0 10px;
+      max-width: 900px;
+    }
+    .paper-meta { color: var(--muted); font-size: 12px; margin: 0; }
+    .paper-meta strong { color: var(--blue); font-weight: 700; }
+    .paper-topline {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      margin: 21px 0 16px; padding-top: 15px; border-top: 1px solid var(--line);
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 7px; width: fit-content;
+      border-radius: 999px; padding: 7px 11px;
+      background: #eef5ec; color: #1c661f; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .status-pill.mixed { background: #fceef2; color: #b03157; }
+    .status-pill:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .pmid-link { color: var(--blue); font-size: 11px; font-weight: 700; text-decoration: none; }
+    .pmid-link:hover { text-decoration: underline; }
+    .claim-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 15px; }
+    .claim-block { min-width: 0; }
+    .claim-label { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .12em; margin-bottom: 7px; text-transform: uppercase; }
+    .claim-copy { color: #51596a; font-size: 13px; line-height: 1.5; margin: 0; }
+    .claim-block.readout { border-left: 3px solid var(--green-light); padding-left: 14px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 19px 0 14px; }
+    .metric {
+      min-height: 86px;
+      padding: 13px 14px;
+      background: var(--canvas);
+      border-radius: 12px;
+    }
+    .metric-value { color: var(--blue-dark); font-family: var(--display); font-size: 23px; line-height: 1.08; }
+    .metric-label { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; line-height: 1.35; margin-top: 8px; text-transform: uppercase; }
+    .evidence-compare {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 13px 15px 12px;
+      margin: 0 0 13px;
+    }
+    .evidence-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .evidence-title { color: var(--blue-dark); font-size: 11px; font-weight: 700; }
+    .evidence-note { color: var(--muted); font-size: 10px; }
+    .bar-track { position: relative; height: 9px; border-radius: 999px; background: #edf0f1; overflow: visible; }
+    .bar-fill { height: 100%; border-radius: 999px; background: var(--green); }
+    .bar-expected {
+      position: absolute; top: -4px; width: 2px; height: 17px;
+      background: var(--pink); transform: translateX(-1px);
+    }
+    .bar-expected:after { content: ""; position: absolute; top: -2px; left: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--pink); }
+    .bar-legend { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 10px; margin-top: 8px; }
+    .bar-legend strong { color: var(--blue-dark); }
+    .power-meter {
+      display: flex; align-items: center; gap: 11px;
+      border-radius: 12px;
+      background: #f2f6f0;
+      padding: 10px 13px;
+      margin: 0 0 14px;
+    }
+    .power-meter-label { flex: none; color: var(--green); font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+    .power-track { height: 6px; flex: 1; overflow: hidden; border-radius: 999px; background: #dce7d9; }
+    .power-fill { height: 100%; background: var(--green); border-radius: inherit; }
+    .power-score { flex: none; color: var(--green); font-size: 13px; font-weight: 700; }
+    .power-basis { color: #647063; font-size: 10px; }
+    .sample-line { color: var(--muted); font-size: 10px; line-height: 1.4; margin: 0 0 13px; }
+    .sample-line strong { color: var(--blue-dark); }
+    .slope-note { margin-left: 9px; color: var(--blue); font-weight: 700; }
+    .primary-result { margin-top: 17px; }
+    .primary-copy { color: #51596a; font-size: 13px; line-height: 1.5; margin: 0 0 14px; }
+    .secondary-wrap { border-top: 1px solid var(--line); padding-top: 12px; }
+    .secondary-title { color: var(--blue); font-size: 10px; font-weight: 700; letter-spacing: .12em; margin: 0 0 8px; text-transform: uppercase; }
+    .secondary-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 7px 18px; }
+    .secondary-list li { position: relative; padding-left: 12px; color: #626978; font-size: 11px; line-height: 1.4; }
+    .secondary-list li:before { content: ""; position: absolute; left: 0; top: 5px; width: 5px; height: 5px; border-radius: 50%; background: var(--blue); }
+    .feature-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-top: 13px; margin-top: 12px; border-top: 1px solid var(--line); }
+    .caveat { color: #7a5260; font-size: 10px; line-height: 1.4; max-width: 75%; margin: 0; }
+    .article-link { flex: none; border-radius: 999px; background: var(--blue); color: white; font-size: 10px; font-weight: 700; padding: 9px 13px; text-decoration: none; }
+    .article-link:hover { background: var(--blue-dark); }
+    .ranking-panel { padding: 23px 22px 19px; display: flex; flex-direction: column; }
+    .rank-title { color: var(--blue-dark); font-family: var(--display); font-size: 23px; letter-spacing: -.035em; line-height: 1.18; margin: 2px 0 8px; }
+    .rank-explainer { color: var(--muted); font-size: 11px; line-height: 1.45; margin: 0 0 15px; }
+    .rank-tools { display: flex; gap: 8px; margin-bottom: 11px; }
+    .rank-tools input, .rank-tools select {
+      min-width: 0; height: 34px; border: 1px solid var(--line); border-radius: 8px; background: white; color: var(--ink);
+      font-size: 11px; outline: none; padding: 0 9px;
+    }
+    .rank-tools input { flex: 1; }
+    .rank-tools select { width: 132px; }
+    .rank-tools input:focus, .rank-tools select:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(64,76,119,.1); }
+    .ranking-list { display: flex; flex-direction: column; gap: 7px; }
+    .rank-row {
+      display: grid; grid-template-columns: 24px minmax(0, 1fr) 48px; align-items: center; gap: 10px;
+      width: 100%; border: 1px solid transparent; border-radius: 12px; background: #f8f8f8;
+      padding: 10px 11px; text-align: left; color: inherit; transition: border-color .16s ease, background .16s ease;
+    }
+    .rank-row:hover { border-color: #cdd3e3; background: #f2f3f7; }
+    .rank-row.active { border-color: #a4c6a0; background: #f1f7ef; }
+    .rank-num { color: #858b99; font-family: var(--display); font-size: 15px; }
+    .rank-copy { min-width: 0; }
+    .rank-condition { overflow: hidden; color: var(--blue-dark); font-size: 12px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .rank-sub { color: var(--muted); font-size: 10px; margin-top: 3px; }
+    .rank-score { color: var(--green); font-size: 13px; font-weight: 700; text-align: right; }
+    .rank-score small { display: block; color: var(--muted); font-size: 9px; font-weight: 400; margin-top: 2px; }
+    .rank-footnote { border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 1.45; margin: auto 0 0; padding-top: 13px; }
+    .howto {
+      display: grid; grid-template-columns: minmax(180px, .4fr) 1fr 1fr;
+      gap: 22px; align-items: start;
+      padding: 20px 24px; margin: 18px 0 16px;
+      border-radius: var(--radius); background: #eef2f3;
+    }
+    .howto h2 { color: var(--blue-dark); font-family: var(--display); font-size: 17px; line-height: 1.2; margin: 0; }
+    .howto p { color: #606878; font-size: 11px; line-height: 1.5; margin: 0; }
+    .howto strong { color: var(--blue-dark); }
+    .footer {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+      padding: 0 0 20px; color: var(--muted); font-size: 10px;
+    }
+    .footer-note { max-width: 920px; line-height: 1.45; }
+    .copyright { flex: none; color: #636363; }
+    .empty-state { color: var(--muted); font-size: 12px; padding: 18px 5px; }
+    .loading { padding: 36px 0; color: var(--muted); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 1080px) {
+      .page { width: min(100% - 40px, 900px); }
+      .intro { grid-template-columns: 1fr; align-items: start; gap: 23px; }
+      .rollup { max-width: 620px; }
+      .board { grid-template-columns: 1fr; }
+      .ranking-panel { min-height: unset; }
+      .howto { grid-template-columns: 1fr 1fr; }
+      .howto h2 { grid-column: 1 / -1; }
+    }
+    @media (max-width: 660px) {
+      .page { width: calc(100% - 28px); }
+      .topbar { min-height: 62px; }
+      .brand { gap: 8px; font-size: 10px; }
+      .brand strong { font-size: 15px; }
+      .event-label { display: none; }
+      .top-status { gap: 8px; font-size: 10px; }
+      .intro { padding: 28px 0 20px; }
+      h1 { font-size: 35px; }
+      .intro-copy { font-size: 13px; }
+      .rollup { gap: 7px; }
+      .rollup-item { min-height: 68px; padding: 11px; }
+      .rollup-value { font-size: 21px; }
+      .rollup-label { font-size: 8px; letter-spacing: .05em; }
+      .feed-strip { padding: 11px 12px; align-items: flex-start; flex-wrap: wrap; }
+      .feed-left { flex-wrap: wrap; gap: 8px 12px; }
+      .ticker { width: 100%; order: 2; }
+      .feed-right { width: 100%; justify-content: space-between; }
+      .controls { gap: 4px; }
+      .control-btn { padding: 7px 9px; font-size: 10px; }
+      .feature-panel, .ranking-panel { padding: 19px 16px; }
+      .paper-heading { font-size: 25px; }
+      .claim-grid { grid-template-columns: 1fr; gap: 13px; }
+      .claim-block.readout { border-left: 0; border-top: 2px solid var(--green-light); padding: 11px 0 0; }
+      .metric-grid { gap: 7px; }
+      .metric { min-height: 78px; padding: 11px 9px; }
+      .metric-value { font-size: 19px; }
+      .metric-label { font-size: 8px; letter-spacing: .04em; }
+      .secondary-list { grid-template-columns: 1fr; }
+      .feature-foot { align-items: flex-start; flex-direction: column; }
+      .caveat { max-width: 100%; }
+      .howto { grid-template-columns: 1fr; gap: 12px; padding: 18px; }
+      .howto h2 { grid-column: auto; }
+      .footer { align-items: flex-start; flex-direction: column; gap: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *:before, *:after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <span>Helix</span><span class="brand-rule"></span><strong>Replicates</strong>
+        <span class="event-label">ASHG 2026 · Montréal</span>
+      </div>
+      <div class="top-status">
+        <span class="live-label"><span class="live-dot"></span> LIVE FEED</span>
+        <span id="syncStatus" aria-live="polite">Connecting to feed…</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow">Replication in minutes, with the evidence in view</p>
+          <h1>A second look at <em>published findings.</em></h1>
+          <p class="intro-copy">Published studies re-tested in the Helix Explorer platform. Follow each result as the feed moves through the evidence.</p>
+        </div>
+        <div class="rollup" aria-label="Pilot feed overview">
+          <div class="rollup-item"><span class="rollup-value" id="paperCount">5</span><span class="rollup-label">Papers in the feed</span></div>
+          <div class="rollup-item"><span class="rollup-value" id="gwasCount">3</span><span class="rollup-label">Genome-wide studies</span></div>
+          <div class="rollup-item"><span class="rollup-value" id="burdenCount">2</span><span class="rollup-label">Gene-burden studies</span></div>
+        </div>
+      </section>
+
+      <section class="feed-strip" aria-label="Feed status and controls">
+        <div class="feed-left">
+          <span class="feed-state">AUTO-CYCLING</span>
+          <span class="feed-meta" id="feedMeta">New feed data checked every 20 seconds</span>
+          <span class="ticker" id="ticker"><span>Loading study summaries…</span></span>
+        </div>
+        <div class="feed-right">
+          <div class="controls">
+            <button class="control-btn secondary" id="previousBtn" type="button" aria-label="Previous study">←</button>
+            <button class="control-btn" id="pauseBtn" type="button">Pause</button>
+            <button class="control-btn secondary" id="nextBtn" type="button">Next →</button>
+            <button class="control-btn secondary" id="fullscreenBtn" type="button">Full screen</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="board">
+        <section class="panel feature-panel" aria-labelledby="paperTitle">
+          <div class="panel-head">
+            <p class="eyebrow">Now in focus <span id="cycleCount" class="head-note"></span></p>
+            <span class="head-note" id="cycleHint">Rotates every 12 seconds</span>
+          </div>
+          <div id="featureContent" class="loading">Loading study summaries…</div>
+        </section>
+
+        <aside class="panel ranking-panel" aria-labelledby="rankingTitle">
+          <p class="eyebrow">Pilot leaderboard</p>
+          <h2 class="rank-title" id="rankingTitle">Power at the published effect size</h2>
+          <p class="rank-explainer">A report-derived ranking of estimated power for each study's primary claim. Power describes sensitivity at the published effect, not replication success.</p>
+          <div class="rank-tools">
+            <label class="sr-only" for="searchInput">Filter papers</label>
+            <input id="searchInput" type="search" placeholder="Find a paper or condition">
+            <label class="sr-only" for="sortSelect">Sort papers</label>
+            <select id="sortSelect">
+              <option value="power">Power: high to low</option>
+              <option value="direction">Direction: high to low</option>
+              <option value="title">Condition: A to Z</option>
+            </select>
+          </div>
+          <div id="rankingList" class="ranking-list"></div>
+          <p class="rank-footnote">GWAS scores use expected corrected-significant findings divided by loci tested. Gene-burden scores use the report's power for its primary claim. Methods differ across studies.</p>
+        </aside>
+      </div>
+
+      <section class="howto" aria-label="How to read the feed">
+        <h2>Read the evidence in context</h2>
+        <p><strong>Direction agreement</strong> shows how many tested effects pointed the same way as the paper. The adjacent count separates those from findings that passed the report's significance threshold.</p>
+        <p><strong>Power</strong> is estimated at the published effect size. These are pilot readouts, not final verdicts; the supplied reports say the verdict rule was set after results were seen.</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span class="footer-note">Source summaries are based on the supplied replication cards. Select a study to inspect its main claim, sample, power estimate, secondary findings, and source paper.</span>
+      <span class="copyright">© 2026 Helix, Inc. All rights reserved.</span>
+    </footer>
+  </div>
+
+  <script id="fallbackFeed" type="application/json">{"schemaVersion":1,"studies":[{"id":"psoriasis","title":"Integration of GWAS and single-cell analysis for psoriasis identifies disease-associated cell subtypes and therapeutic targets","condition":"Psoriasis","journal":"Nature Communications","year":2026,"pmid":"42802183","doi":"10.1038/s41467-026-77309-2","kind":"gwas","statusLabel":"Strong directional agreement","claim":"The paper reports 125 independent psoriasis susceptibility loci, including 17 novel loci.","summary":"The Helix card tested 105 of 122 available loci. 101 of 105 effects matched the published direction; 53 passed the corrected threshold, compared with 103.8 expected at the published effects.","cases":"22,789","controls":"144,243","powerScore":0.9886,"powerBasis":"103.8 expected significant loci / 105 tested","metrics":{"testedLoci":105,"sourceLoci":122,"directionCount":101,"replicatedCount":53,"expectedHits":103.8,"effectSlope":0.49,"novelTested":14,"novelDirection":12,"novelReplicated":4},"secondarySignals":["Of 14 tested novel loci, 12 matched direction and 4 met the replication threshold.","The effect-size slope was 0.49, indicating smaller estimates than the published results."],"caveat":"The card notes that three conditional signals could not be reconstructed without the paper's summary statistics. It also notes that the verdict rule was set after results were seen."},{"id":"hearing-loss","title":"Discovering Age- and Sex-Specific Genetic Risk Factors in Sensorineural Hearing Loss: Genome-Wide Evidence from Large-Scale Biobanks","condition":"Sensorineural hearing loss","journal":"Journal of the Association for Research in Otolaryngology","year":2026,"pmid":"42192083","doi":"10.1007/s10162-026-01054-y","kind":"gwas","statusLabel":"Direction mostly aligned","claim":"The paper reports nine novel sensorineural hearing-loss loci across overall, sex-specific, and age-of-onset analyses.","summary":"Eight of nine reported variants were testable. Seven of eight effects matched direction; one passed the corrected threshold, compared with 7.8 expected at the published effects.","cases":"64,407","controls":"230,262","powerScore":0.975,"powerBasis":"7.8 expected significant variants / 8 tested","metrics":{"testedLoci":8,"sourceLoci":9,"directionCount":7,"replicatedCount":1,"expectedHits":7.8,"effectSlope":0.24},"secondarySignals":["Seven of eight estimates were in the published direction (88%).","The effect-size slope was 0.24, so estimates were substantially smaller than published."],"caveat":"The report says its verdict is pending and the verdict rule was set after results were seen."},{"id":"coronary-artery-disease","title":"Genetic evidence supports the combined targeting of lipoprotein(a) and LDL cholesterol to reduce coronary artery disease risk","condition":"Coronary artery disease","journal":"Nature Cardiovascular Research","year":2026,"pmid":"42693289","doi":"10.1038/s44161-026-00865-9","kind":"burden","statusLabel":"Mixed evidence","claim":"The paper reports lower coronary disease odds among LPA and PCSK9 loss-of-function carriers, with the lowest odds among carriers of both genes.","summary":"The combined-carrier primary result did not reproduce: OR 1.01 (p=0.914) versus OR 0.73 in the paper. Two single-gene comparisons were significant in the expected direction.","cases":"77,514","controls":"224,139","powerScore":0.83,"powerBasis":"83% power for the combined primary claim","primaryFinding":"Combined LPA and PCSK9 carriers: OR 1.01 (95% CI 0.84-1.21), p=0.914; paper OR 0.73.","secondarySignals":["LPA pLoF carriers: OR 0.94, p=4.1e-4; replicated against paper OR 0.91.","PCSK9 pLoF plus p.Arg46Leu: OR 0.89, p=2.3e-5; replicated against paper OR 0.81.","PCSK9 pLoF only: OR 0.79, p=0.114; not significant against paper OR 0.59."],"caveat":"The report uses a 0.025 significance threshold for the two-gene analysis and says its verdict rule was set after results were seen."},{"id":"thyroid-cancer","title":"Genetic drivers of etiologic heterogeneity in thyroid cancer","condition":"Thyroid cancer","journal":"Nature Communications","year":2026,"pmid":"42431967","doi":"10.1038/s41467-026-75111-8","kind":"gwas","statusLabel":"Strong directional agreement","claim":"The paper reports common variants at 51 loci associated with thyroid-cancer risk across ancestries, including 21 novel loci.","summary":"The Helix card tested 48 of 51 loci. 47 of 48 effects matched direction; 27 passed the corrected threshold, compared with 37.9 expected at the published effects.","cases":"4,934","controls":"31,477","powerScore":0.7896,"powerBasis":"37.9 expected significant loci / 48 tested","metrics":{"testedLoci":48,"sourceLoci":51,"directionCount":47,"replicatedCount":27,"expectedHits":37.9,"effectSlope":0.83,"novelTested":19,"novelDirection":19,"novelReplicated":6},"secondarySignals":["Of 19 tested novel loci, all 19 matched direction and 6 met the replication threshold.","All five strongest loci listed in the report replicated in the expected direction."],"caveat":"The effect-size slope was 0.83. The card notes that its verdict rule was set after results were seen."},{"id":"gastric-cancer","title":"Exome sequencing points to pathogenic ATM variants in gastric cancer","condition":"Gastric cancer","journal":"European Journal of Human Genetics","year":2026,"pmid":"41454052","doi":"10.1038/s41431-025-01994-8","kind":"burden","statusLabel":"Mixed evidence","claim":"The paper reports enrichment of rare pathogenic loss-of-function variants in ATM among gastric-cancer cases; CDH1 is a secondary established-gene result.","summary":"The primary ATM finding was not significant in the Helix cohort: OR 1.85 (p=0.411) versus paper OR 3.94. The secondary CDH1 result was significant, while FANCA had too few carriers to estimate.","cases":"476","controls":"3,215","powerScore":0.72,"powerBasis":"72% power for the ATM primary claim","primaryFinding":"ATM pLoF carriers: OR 1.85 (95% CI 0.51-6.65), p=0.411; paper OR 3.94.","secondarySignals":["CDH1 pLoF carriers: OR 83.5 (95% CI 10.7-653), p=2.5e-5; paper OR 11.2.","FANCA had too few carriers to estimate."],"caveat":"The CDH1 estimate is based on sparse carriers and has a wide confidence interval. Carrier counts below five are suppressed in the report."}]}</script>
+  <script>
+    (function () {
+      "use strict";
+      var studies = [];
+      var currentId = "";
+      var currentIndex = 0;
+      var autoAdvance = true;
+      var rotationTimer = null;
+      var refreshTimer = null;
+      var syncTimer = null;
+      var lastJson = "";
+      var nextAt = 0;
+
+      var feature = document.getElementById("featureContent");
+      var list = document.getElementById("rankingList");
+      var syncStatus = document.getElementById("syncStatus");
+      var sortSelect = document.getElementById("sortSelect");
+      var searchInput = document.getElementById("searchInput");
+
+      function esc(value) {
+        return String(value == null ? "" : value).replace(/[&<>"']/g, function (character) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character];
+        });
+      }
+      function scorePercent(study) {
+        var value = Number(study.powerScore);
+        if (!isFinite(value)) return 0;
+        return Math.max(0, Math.min(100, Math.round(value * 100)));
+      }
+      function ratio(study) {
+        if (!study.metrics || !study.metrics.testedLoci) return -1;
+        return study.metrics.directionCount / study.metrics.testedLoci;
+      }
+      function safeArray(value) { return Array.isArray(value) ? value : []; }
+      function currentStudy() {
+        if (!studies.length) return null;
+        currentIndex = Math.max(0, Math.min(currentIndex, studies.length - 1));
+        return studies[currentIndex];
+      }
+      function updateTicker() {
+        var names = studies.map(function (study) { return esc(study.condition); });
+        document.getElementById("ticker").innerHTML = "<span>" + names.join(" &nbsp;·&nbsp; ") + "</span>";
+      }
+      function formatMetric(value) {
+        if (value == null) return "—";
+        return String(value);
+      }
+      function paperLink(study) {
+        return "https://doi.org/" + encodeURI(String(study.doi || ""));
+      }
+      function renderGwas(study) {
+        var m = study.metrics || {};
+        var denominator = Number(m.testedLoci) || 1;
+        var expected = Number(m.expectedHits) || 0;
+        var observed = Number(m.replicatedCount) || 0;
+        var observedWidth = Math.max(0, Math.min(100, observed / denominator * 100));
+        var expectedWidth = Math.max(0, Math.min(100, expected / denominator * 100));
+        var dirLabel = formatMetric(m.directionCount) + " / " + formatMetric(m.testedLoci);
+        var sigLabel = formatMetric(m.replicatedCount) + " / " + formatMetric(m.testedLoci);
+        return '<div class="metric-grid">' +
+          '<div class="metric"><div class="metric-value">' + esc(dirLabel) + '</div><div class="metric-label">Effects in the same direction</div></div>' +
+          '<div class="metric"><div class="metric-value">' + esc(formatMetric(m.replicatedCount)) + '</div><div class="metric-label">Passed corrected threshold</div></div>' +
+          '<div class="metric"><div class="metric-value">' + esc(formatMetric(m.expectedHits)) + '</div><div class="metric-label">Expected at reported power</div></div>' +
+          '</div>' +
+          '<div class="evidence-compare">' +
+            '<div class="evidence-top"><span class="evidence-title">Threshold-level findings</span><span class="evidence-note">observed vs expected</span></div>' +
+            '<div class="bar-track" role="img" aria-label="' + esc(observed + " observed and " + expected + " expected of " + denominator) + '">' +
+              '<div class="bar-fill" style="width:' + observedWidth + '%"></div>' +
+              '<span class="bar-expected" style="left:' + expectedWidth + '%"></span>' +
+            '</div>' +
+            '<div class="bar-legend"><span>Observed <strong>' + esc(observed) + '</strong> of ' + esc(denominator) + '</span><span>Expected <strong>' + esc(expected) + '</strong></span></div>' +
+          '</div>' +
+          '<div class="power-meter"><span class="power-meter-label">Power index</span><div class="power-track" aria-hidden="true"><div class="power-fill" style="width:' + scorePercent(study) + '%"></div></div><span class="power-score">' + scorePercent(study) + '%</span><span class="power-basis">' + esc(study.powerBasis) + '</span></div>' +
+          '<div class="sample-line">Helix sample: <strong>' + esc(study.cases) + '</strong> cases · <strong>' + esc(study.controls) + '</strong> controls' +
+          (m.effectSlope != null ? ' <span class="slope-note">Effect-size slope ' + esc(m.effectSlope) + '</span>' : '') + '</div>';
+      }
+      function renderBurden(study) {
+        var signals = safeArray(study.secondarySignals);
+        return '<div class="primary-result">' +
+          '<div class="claim-label">Primary claim readout</div>' +
+          '<p class="primary-copy">' + esc(study.primaryFinding || study.summary) + '</p>' +
+          '<div class="metric-grid burden-metrics">' +
+            '<div class="metric"><div class="metric-value">' + scorePercent(study) + '%</div><div class="metric-label">Power at published primary effect</div></div>' +
+            '<div class="metric"><div class="metric-value">' + esc(study.cases) + '</div><div class="metric-label">Cases in Helix cohort</div></div>' +
+            '<div class="metric"><div class="metric-value">' + esc(study.controls) + '</div><div class="metric-label">Matched controls</div></div>' +
+          '</div>' +
+          '<div class="power-meter"><span class="power-meter-label">Power</span><div class="power-track" aria-hidden="true"><div class="power-fill" style="width:' + scorePercent(study) + '%"></div></div><span class="power-score">' + scorePercent(study) + '%</span><span class="power-basis">' + esc(study.powerBasis) + '</span></div>' +
+          '</div>' +
+          '<div class="secondary-wrap"><p class="secondary-title">Other results in the report</p><ul class="secondary-list">' +
+            signals.map(function (signal) { return '<li>' + esc(signal) + '</li>'; }).join("") +
+          '</ul></div>';
+      }
+      function renderFeature() {
+        var study = currentStudy();
+        if (!study) {
+          feature.innerHTML = '<div class="empty-state">No studies are available in papers.json.</div>';
+          return;
+        }
+        var mixed = study.kind === "burden";
+        document.getElementById("cycleCount").textContent = (currentIndex + 1) + " of " + studies.length;
+        feature.innerHTML =
+          '<div class="paper-topline">' +
+            '<span class="status-pill ' + (mixed ? "mixed" : "") + '">' + esc(study.statusLabel) + '</span>' +
+            '<a class="pmid-link" href="' + esc(paperLink(study)) + '" target="_blank" rel="noopener noreferrer">Original paper ↗</a>' +
+          '</div>' +
+          '<p class="eyebrow">' + esc(study.condition) + ' · ' + esc(study.year) + '</p>' +
+          '<h2 class="paper-heading" id="paperTitle">' + esc(study.title) + '</h2>' +
+          '<p class="paper-meta"><strong>' + esc(study.journal) + '</strong> · PMID ' + esc(study.pmid) + '</p>' +
+          '<div class="claim-grid">' +
+            '<div class="claim-block"><div class="claim-label">The published claim</div><p class="claim-copy">' + esc(study.claim) + '</p></div>' +
+            '<div class="claim-block readout"><div class="claim-label">Helix readout</div><p class="claim-copy">' + esc(study.summary) + '</p></div>' +
+          '</div>' +
+          (study.kind === "gwas" ? renderGwas(study) : renderBurden(study)) +
+          (study.kind === "gwas" && safeArray(study.secondarySignals).length ? '<div class="secondary-wrap"><p class="secondary-title">Additional context</p><ul class="secondary-list">' + safeArray(study.secondarySignals).map(function (signal) { return '<li>' + esc(signal) + '</li>'; }).join("") + '</ul></div>' : '') +
+          '<div class="feature-foot"><p class="caveat">' + esc(study.caveat) + '</p><a class="article-link" href="' + esc(paperLink(study)) + '" target="_blank" rel="noopener noreferrer">View paper</a></div>';
+        var pauseButton = document.getElementById("pauseBtn");
+        pauseButton.textContent = autoAdvance ? "Pause" : "Play";
+      }
+      function sortedStudies() {
+        var query = searchInput.value.trim().toLowerCase();
+        var result = studies.filter(function (study) {
+          return !query || (study.title + " " + study.condition + " " + study.journal).toLowerCase().indexOf(query) !== -1;
+        });
+        var mode = sortSelect.value;
+        result.sort(function (a, b) {
+          if (mode === "direction") return ratio(b) - ratio(a);
+          if (mode === "title") return a.condition.localeCompare(b.condition);
+          return Number(b.powerScore) - Number(a.powerScore);
+        });
+        return result;
+      }
+      function renderRanking() {
+        var ordered = sortedStudies();
+        if (!ordered.length) {
+          list.innerHTML = '<div class="empty-state">No matching papers.</div>';
+          return;
+        }
+        list.innerHTML = ordered.map(function (study, index) {
+          var active = study.id === currentId;
+          var detail = study.kind === "gwas" ? (study.metrics.directionCount + " of " + study.metrics.testedLoci + " same direction") : study.statusLabel;
+          return '<button class="rank-row ' + (active ? "active" : "") + '" type="button" data-id="' + esc(study.id) + '" aria-pressed="' + (active ? "true" : "false") + '">' +
+            '<span class="rank-num">' + String(index + 1).padStart(2, "0") + '</span>' +
+            '<span class="rank-copy"><span class="rank-condition">' + esc(study.condition) + '</span><span class="rank-sub">' + esc(detail) + '</span></span>' +
+            '<span class="rank-score">' + scorePercent(study) + '%<small>power</small></span>' +
+          '</button>';
+        }).join("");
+        Array.prototype.forEach.call(list.querySelectorAll(".rank-row"), function (button) {
+          button.addEventListener("click", function () { selectStudy(button.getAttribute("data-id")); });
+        });
+      }
+      function updateAll() {
+        document.getElementById("paperCount").textContent = String(studies.length);
+        document.getElementById("gwasCount").textContent = String(studies.filter(function (study) { return study.kind === "gwas"; }).length);
+        document.getElementById("burdenCount").textContent = String(studies.filter(function (study) { return study.kind === "burden"; }).length);
+        updateTicker();
+        renderFeature();
+        renderRanking();
+      }
+      function selectStudy(id) {
+        var index = studies.findIndex(function (study) { return study.id === id; });
+        if (index < 0) return;
+        currentId = id;
+        currentIndex = index;
+        nextAt = Date.now() + 12000;
+        renderFeature();
+        renderRanking();
+      }
+      function step(direction) {
+        if (!studies.length) return;
+        currentIndex = (currentIndex + direction + studies.length) % studies.length;
+        currentId = studies[currentIndex].id;
+        nextAt = Date.now() + 12000;
+        renderFeature();
+        renderRanking();
+      }
+      function setAuto(enabled) {
+        autoAdvance = enabled;
+        document.getElementById("pauseBtn").textContent = autoAdvance ? "Pause" : "Play";
+        document.getElementById("cycleHint").textContent = autoAdvance ? "Rotates every 12 seconds" : "Auto-rotation paused";
+        nextAt = Date.now() + 12000;
+      }
+      function validateFeed(feed) {
+        return feed && Array.isArray(feed.studies) && feed.studies.every(function (study) {
+          return study && typeof study.id === "string" && typeof study.title === "string" && typeof study.condition === "string" && isFinite(Number(study.powerScore));
+        });
+      }
+      function loadFallbackFeed() {
+        try {
+          var fallback = JSON.parse(document.getElementById("fallbackFeed").textContent);
+          if (!validateFeed(fallback)) return;
+          lastJson = JSON.stringify(fallback);
+          studies = fallback.studies;
+          currentIndex = 0;
+          currentId = studies.length ? studies[0].id : "";
+          updateAll();
+          syncStatus.textContent = "Snapshot loaded";
+          document.getElementById("feedMeta").textContent = "Snapshot mode · use the launcher for live updates";
+        } catch (error) {
+          // The network feed remains the source of truth when it is available.
+        }
+      }
+      function syncFeed() {
+        fetch("./papers.json?refresh=" + Date.now(), { cache: "no-store" })
+          .then(function (response) {
+            if (!response.ok) throw new Error("The feed file could not be read.");
+            return response.json();
+          })
+          .then(function (feed) {
+            if (!validateFeed(feed)) throw new Error("papers.json does not match the feed format.");
+            var serialized = JSON.stringify(feed);
+            if (serialized !== lastJson) {
+              var keepId = currentId;
+              lastJson = serialized;
+              studies = feed.studies;
+              var keepIndex = studies.findIndex(function (study) { return study.id === keepId; });
+              currentIndex = keepIndex >= 0 ? keepIndex : 0;
+              currentId = studies.length ? studies[currentIndex].id : "";
+              updateAll();
+              syncStatus.textContent = "Feed updated " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+            } else {
+              syncStatus.textContent = "Feed checked " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+            }
+          })
+          .catch(function (error) {
+            if (studies.length) {
+              syncStatus.textContent = "Snapshot loaded · live refresh unavailable";
+              document.getElementById("feedMeta").textContent = "Snapshot mode · serve over HTTP for live updates";
+              return;
+            }
+            syncStatus.textContent = "Feed not connected";
+            feature.innerHTML = '<div class="empty-state">Open this folder with the included Start Live Feed file, or serve it over HTTP, to connect to papers.json. ' + esc(error.message) + '</div>';
+          });
+      }
+      document.getElementById("previousBtn").addEventListener("click", function () { step(-1); });
+      document.getElementById("nextBtn").addEventListener("click", function () { step(1); });
+      document.getElementById("pauseBtn").addEventListener("click", function () { setAuto(!autoAdvance); });
+      document.getElementById("fullscreenBtn").addEventListener("click", function () {
+        if (!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+        else if (document.exitFullscreen) document.exitFullscreen();
+      });
+      sortSelect.addEventListener("change", renderRanking);
+      searchInput.addEventListener("input", renderRanking);
+      rotationTimer = window.setInterval(function () { if (autoAdvance) step(1); }, 12000);
+      refreshTimer = window.setInterval(syncFeed, 20000);
+      syncTimer = window.setInterval(function () {
+        if (!autoAdvance || !studies.length) return;
+        var remaining = Math.max(0, Math.ceil((nextAt - Date.now()) / 1000));
+        document.getElementById("cycleHint").textContent = "Next paper in " + remaining + " sec";
+      }, 500);
+      nextAt = Date.now() + 12000;
+      loadFallbackFeed();
+      syncFeed();
+      window.addEventListener("beforeunload", function () {
+        window.clearInterval(rotationTimer);
+        window.clearInterval(refreshTimer);
+        window.clearInterval(syncTimer);
+      });
+    }());
+  </script>
+</body>
+</html>

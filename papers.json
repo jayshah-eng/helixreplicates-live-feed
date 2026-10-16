@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "studies": [
+    {
+      "id": "psoriasis",
+      "title": "Integration of GWAS and single-cell analysis for psoriasis identifies disease-associated cell subtypes and therapeutic targets",
+      "condition": "Psoriasis",
+      "journal": "Nature Communications",
+      "year": 2026,
+      "pmid": "42802183",
+      "doi": "10.1038/s41467-026-77309-2",
+      "kind": "gwas",
+      "statusLabel": "Strong directional agreement",
+      "claim": "The paper reports 125 independent psoriasis susceptibility loci, including 17 novel loci.",
+      "summary": "The Helix card tested 105 of 122 available loci. 101 of 105 effects matched the published direction; 53 passed the corrected threshold, compared with 103.8 expected at the published effects.",
+      "cases": "22,789",
+      "controls": "144,243",
+      "powerScore": 0.9886,
+      "powerBasis": "103.8 expected significant loci / 105 tested",
+      "metrics": {
+        "testedLoci": 105,
+        "sourceLoci": 122,
+        "directionCount": 101,
+        "replicatedCount": 53,
+        "expectedHits": 103.8,
+        "effectSlope": 0.49,
+        "novelTested": 14,
+        "novelDirection": 12,
+        "novelReplicated": 4
+      },
+      "secondarySignals": [
+        "Of 14 tested novel loci, 12 matched direction and 4 met the replication threshold.",
+        "The effect-size slope was 0.49, indicating smaller estimates than the published results."
+      ],
+      "caveat": "The card notes that three conditional signals could not be reconstructed without the paper's summary statistics. It also notes that the verdict rule was set after results were seen."
+    },
+    {
+      "id": "hearing-loss",
+      "title": "Discovering Age- and Sex-Specific Genetic Risk Factors in Sensorineural Hearing Loss: Genome-Wide Evidence from Large-Scale Biobanks",
+      "condition": "Sensorineural hearing loss",
+      "journal": "Journal of the Association for Research in Otolaryngology",
+      "year": 2026,
+      "pmid": "42192083",
+      "doi": "10.1007/s10162-026-01054-y",
+      "kind": "gwas",
+      "statusLabel": "Direction mostly aligned",
+      "claim": "The paper reports nine novel sensorineural hearing-loss loci across overall, sex-specific, and age-of-onset analyses.",
+      "summary": "Eight of nine reported variants were testable. Seven of eight effects matched direction; one passed the corrected threshold, compared with 7.8 expected at the published effects.",
+      "cases": "64,407",
+      "controls": "230,262",
+      "powerScore": 0.975,
+      "powerBasis": "7.8 expected significant variants / 8 tested",
+      "metrics": {
+        "testedLoci": 8,
+        "sourceLoci": 9,
+        "directionCount": 7,
+        "replicatedCount": 1,
+        "expectedHits": 7.8,
+        "effectSlope": 0.24
+      },
+      "secondarySignals": [
+        "Seven of eight estimates were in the published direction (88%).",
+        "The effect-size slope was 0.24, so estimates were substantially smaller than published."
+      ],
+      "caveat": "The report says its verdict is pending and the verdict rule was set after results were seen."
+    },
+    {
+      "id": "coronary-artery-disease",
+      "title": "Genetic evidence supports the combined targeting of lipoprotein(a) and LDL cholesterol to reduce coronary artery disease risk",
+      "condition": "Coronary artery disease",
+      "journal": "Nature Cardiovascular Research",
+      "year": 2026,
+      "pmid": "42693289",
+      "doi": "10.1038/s44161-026-00865-9",
+      "kind": "burden",
+      "statusLabel": "Mixed evidence",
+      "claim": "The paper reports lower coronary disease odds among LPA and PCSK9 loss-of-function carriers, with the lowest odds among carriers of both genes.",
+      "summary": "The combined-carrier primary result did not reproduce: OR 1.01 (p=0.914) versus OR 0.73 in the paper. Two single-gene comparisons were significant in the expected direction.",
+      "cases": "77,514",
+      "controls": "224,139",
+      "powerScore": 0.83,
+      "powerBasis": "83% power for the combined primary claim",
+      "primaryFinding": "Combined LPA and PCSK9 carriers: OR 1.01 (95% CI 0.84-1.21), p=0.914; paper OR 0.73.",
+      "secondarySignals": [
+        "LPA pLoF carriers: OR 0.94, p=4.1e-4; replicated against paper OR 0.91.",
+        "PCSK9 pLoF plus p.Arg46Leu: OR 0.89, p=2.3e-5; replicated against paper OR 0.81.",
+        "PCSK9 pLoF only: OR 0.79, p=0.114; not significant against paper OR 0.59."
+      ],
+      "caveat": "The report uses a 0.025 significance threshold for the two-gene analysis and says its verdict rule was set after results were seen."
+    },
+    {
+      "id": "thyroid-cancer",
+      "title": "Genetic drivers of etiologic heterogeneity in thyroid cancer",
+      "condition": "Thyroid cancer",
+      "journal": "Nature Communications",
+      "year": 2026,
+      "pmid": "42431967",
+      "doi": "10.1038/s41467-026-75111-8",
+      "kind": "gwas",
+      "statusLabel": "Strong directional agreement",
+      "claim": "The paper reports common variants at 51 loci associated with thyroid-cancer risk across ancestries, including 21 novel loci.",
+      "summary": "The Helix card tested 48 of 51 loci. 47 of 48 effects matched direction; 27 passed the corrected threshold, compared with 37.9 expected at the published effects.",
+      "cases": "4,934",
+      "controls": "31,477",
+      "powerScore": 0.7896,
+      "powerBasis": "37.9 expected significant loci / 48 tested",
+      "metrics": {
+        "testedLoci": 48,
+        "sourceLoci": 51,
+        "directionCount": 47,
+        "replicatedCount": 27,
+        "expectedHits": 37.9,
+        "effectSlope": 0.83,
+        "novelTested": 19,
+        "novelDirection": 19,
+        "novelReplicated": 6
+      },
+      "secondarySignals": [
+        "Of 19 tested novel loci, all 19 matched direction and 6 met the replication threshold.",
+        "All five strongest loci listed in the report replicated in the expected direction."
+      ],
+      "caveat": "The effect-size slope was 0.83. The card notes that its verdict rule was set after results were seen."
+    },
+    {
+      "id": "gastric-cancer",
+      "title": "Exome sequencing points to pathogenic ATM variants in gastric cancer",
+      "condition": "Gastric cancer",
+      "journal": "European Journal of Human Genetics",
+      "year": 2026,
+      "pmid": "41454052",
+      "doi": "10.1038/s41431-025-01994-8",
+      "kind": "burden",
+      "statusLabel": "Mixed evidence",
+      "claim": "The paper reports enrichment of rare pathogenic loss-of-function variants in ATM among gastric-cancer cases; CDH1 is a secondary established-gene result.",
+      "summary": "The primary ATM finding was not significant in the Helix cohort: OR 1.85 (p=0.411) versus paper OR 3.94. The secondary CDH1 result was significant, while FANCA had too few carriers to estimate.",
+      "cases": "476",
+      "controls": "3,215",
+      "powerScore": 0.72,
+      "powerBasis": "72% power for the ATM primary claim",
+      "primaryFinding": "ATM pLoF carriers: OR 1.85 (95% CI 0.51-6.65), p=0.411; paper OR 3.94.",
+      "secondarySignals": [
+        "CDH1 pLoF carriers: OR 83.5 (95% CI 10.7-653), p=2.5e-5; paper OR 11.2.",
+        "FANCA had too few carriers to estimate."
+      ],
+      "caveat": "The CDH1 estimate is based on sparse carriers and has a wide confidence interval. Carrier counts below five are suppressed in the report."
+    }
+  ]
+}
